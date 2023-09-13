@@ -19,6 +19,6 @@ Long-term goals include finding a solution for the system font issue and maybe a
 
 # Directions for installation (USA version of the game only):
 <sup>Note: These directions assume that you have PPSSPP installed and a valid USA ROM of the game. You can find instructions on how to rip the game from your own copy online</sup>
-1. Transfer all files to: PPSSPP\memstick\PSP\TEXTURES\ULUS10566
+1. Transfer all files in folder `02 - Ready to Use` to: `PPSSPP\memstick\PSP\TEXTURES\ULUS10566` If don't have `TEXTURES` folder create new one
 2. Open PPSSPP and Click on Settings > Tools > Developer Tools and make sure "Replace textures" is checked.
 3. Load the game and ensure the textures are being replaced. If you're not sure, repeat step 2 and compare.
