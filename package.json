@@ -1,12 +1,14 @@
 {
   "name": "D012FFRT",
-  "packageManager": "yarn@3.6.3",
   "scripts": {
     "pre-deploy": "node ./scripts/pre_deploy.js",
-    "deploy": "yarn pre-deploy && node ./scripts/deploy.js"
+    "deploy": "yarn pre-deploy && node ./scripts/deploy.js",
+    "watch": "node ./scripts/watch.js",
+    "clean": "del /f/q .\\tmp\\raw\\*"
   },
   "devDependencies": {
     "fs-extra": "^11.1.1",
-    "ini": "^4.1.1"
+    "ini": "^4.1.1",
+    "chokidar": "^3.5.3"
   }
 }
