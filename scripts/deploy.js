@@ -16,6 +16,13 @@ if (!fsExtra.existsSync(saveLocation)) {
 
 fsExtra.emptyDirSync(saveLocation)
 
-fsExtra.cpSync(path.resolve(__dirname, '../02 - Ready to Use/'), saveLocation, { recursive: true })
+fsExtra.cpSync(path.resolve(__dirname, '../src'), saveLocation, {
+  recursive: true,
+  filter: (source) => {
+    const checkFile = path.basename(source)
+
+    return !/X\d+ - /.test(checkFile) && !/\.(psd|ai)$/.test(checkFile) && !/^[A-Fa-f0-9]+\..+/.test(checkFile)
+  },
+})
 
 console.info('[END] - Deployment Script')

@@ -1,8 +1,7 @@
 {
   "name": "D012FFRT",
   "scripts": {
-    "pre-deploy": "node ./scripts/pre_deploy.js",
-    "deploy": "yarn pre-deploy && node ./scripts/deploy.js",
+    "deploy": "node ./scripts/deploy.js",
     "watch": "node ./scripts/watch.js",
     "clean": "node ./scripts/clean.js"
   },
