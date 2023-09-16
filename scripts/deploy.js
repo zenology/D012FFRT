@@ -7,7 +7,7 @@ console.info('[START] - Deployment Script')
 const saveLocation = getConfig()?.save_location
 
 if (!saveLocation) {
-  throw new Error('Cannot read config for save path')
+  throw new Error('save location not found: ' + saveLocation)
 }
 
 if (!fsExtra.existsSync(saveLocation)) {
