@@ -2,6 +2,7 @@ const getConfig = require("./helper");
 const chokidar = require('chokidar');
 const path = require('path')
 const fs = require('fs-extra')
+const timer = require('timers/promises')
 
 const saveLocation = getConfig()?.save_location
 
@@ -22,12 +23,20 @@ srcWatcher.on('change', (pathName) => {
   const fileName = path.basename(pathName)
 
   if (!/X\d+ - /.test(fileName) && !/\.(psd|ai|tmp)$/.test(fileName) && !/^[A-Fa-f0-9]+\..+/.test(fileName)) {
-    const rootFolder = pathName.replace(srcPath + "\\", '').replace("\\" + fileName, '')
+    let rootFile = pathName.replace(srcPath + "\\", '')
+    const isSingleLevelDir = rootFile === fileName
 
-    fs.ensureDirSync(path.resolve(saveLocation, rootFolder))
-    fs.cpSync(pathName, path.resolve(saveLocation, rootFolder, fileName))
+    // Wait 1 second for the file to finish created
+    timer.setTimeout(1000).then(() => {
+      if (!isSingleLevelDir) {
+        fs.ensureDirSync(path.resolve(saveLocation, rootFile.replace('\\' + fileName)))
+      }
 
-    console.info('[DEPLOY] Texture file to PPSSPP: ' + rootFolder + "/" + fileName)
+      fs.cpSync(pathName, path.resolve(saveLocation, rootFile))
+
+      const infoFileMsg = rootFile
+      console.info('[DEPLOY] Texture file to PPSSPP: ' + infoFileMsg)
+    })
   }
 })
 
