@@ -51,9 +51,8 @@ destWatcher.on('ready', () => {
 destWatcher.on('change', (pathName) => {
   const fileName = path.basename(pathName)
 
-  if (!fs.existsSync(path.resolve(__dirname, '../tmp', fileName))) {
-    fs.cpSync(pathName, path.resolve(__dirname, '../tmp', fileName), { recursive: true })
-    console.info('[SYNC] Texture file to src: ' + fileName)
-  }
+  fs.cpSync(pathName, path.resolve(__dirname, '../tmp', fileName), { recursive: true })
+  console.info('[SYNC] Texture file to src: ' + fileName)
+
 })
 
