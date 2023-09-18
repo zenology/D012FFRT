@@ -21,10 +21,10 @@ srcWatcher.on('ready', () => {
 
 srcWatcher.on('change', (pathName) => {
   const fileName = path.basename(pathName)
+  const rootFile = pathName.replace(srcPath + "\\", '')
+  const isSingleLevelDir = rootFile === fileName
 
-  if (!/X\d+ - /.test(fileName) && !/\.(psd|ai|tmp)$/.test(fileName) && !/^[A-Fa-f0-9]+\..+/.test(fileName)) {
-    let rootFile = pathName.replace(srcPath + "\\", '')
-    const isSingleLevelDir = rootFile === fileName
+  if (!/X\d+ - /.test(rootFile) && !/\.(psd|ai|tmp)$/.test(fileName) && !/^[A-Fa-f0-9]+\..+/.test(fileName)) {
 
     // Wait 1 second for the file to finish created
     timer.setTimeout(1000).then(() => {
