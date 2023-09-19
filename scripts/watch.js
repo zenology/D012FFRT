@@ -24,7 +24,7 @@ srcWatcher.on('change', (pathName) => {
   const rootFile = pathName.replace(srcPath + "\\", '')
   const isSingleLevelDir = rootFile === fileName
 
-  if (!/X\d+ - /.test(rootFile) && !/\.(psd|ai|tmp)$/.test(fileName) && !/^[A-Fa-f0-9]+\..+/.test(fileName)) {
+  if (!/X\d+ - /.test(rootFile) && !/\.(psd|ai|tmp)$/.test(fileName) && !/^[A-Fa-f0-9]+\..+/.test(fileName) && !/\.tmp/.test(rootFile)) {
 
     // Wait 1 second for the file to finish created
     timer.setTimeout(1000).then(() => {
@@ -55,4 +55,3 @@ destWatcher.on('change', (pathName) => {
   console.info('[SYNC] Texture file to src: ' + fileName)
 
 })
-
