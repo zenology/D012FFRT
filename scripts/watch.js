@@ -13,37 +13,22 @@ if (!saveLocation) {
 const srcPath = path.resolve(__dirname, '../src')
 const newTexturePath = path.resolve(saveLocation, 'new')
 
-console.log(`${color.blueBright(`[DEPLOY_READY]`)} - WIP Folder Watched Ready: ${srcPath}`)
+console.log(`${color.blueBright(`[DEPLOY:READY]`)} - WIP Folder Watched Ready: ${color.yellow(srcPath)}`)
 syncDir.sync(srcPath, saveLocation, {
   watch: true,
   skipInitialSync: true,
-  filter: (pathName) => {
+
+  exclude: (pathName) => {
     const fileName = path.basename(pathName)
     const rootFile = pathName.replace(srcPath + "\\", '')
 
-    return !/X\d+ - /.test(rootFile) && !/\.(psd|ai|tmp)$/.test(fileName) && !/^[A-Fa-f0-9]+\..+/.test(fileName) && !/\.tmp/.test(rootFile)
+    return /X\d+ - /.test(rootFile) || /\.(psd|ai|tmp)$/.test(fileName) || /^[A-Fa-f0-9]+\..+/.test(fileName) || /\.tmp/.test(rootFile)
   },
-  afterEachSync: ({ eventType, srcPath }) => { console.log(`${color.blueBright(`[DEPLOY_${voca.upperCase(eventType)}]`)} ${path.basename(srcPath)}`) }
+  afterEachSync: ({ eventType, srcPath }) => { console.log(`${color.blueBright(`[DEPLOY:${voca.upperCase(eventType)}]`)} - ${color.yellow(path.basename(srcPath))}`) }
 })
 
-// const destWatcher = chokidar.watch(newTexturePath, { persistent, awaitWriteFinish: true })
-
-// destWatcher.on('ready', () => {
-//   fs.ensureDirSync(path.resolve(__dirname, '../tmp'))
-
-//   console.log('[READY] - Destination Folder Watched Ready: ' + newTexturePath)
-// })
-
-// destWatcher.on('change', (pathName) => {
-//   const fileName = path.basename(pathName)
-
-//   fs.cpSync(pathName, path.resolve(__dirname, '../tmp', fileName), { recursive: true })
-//   console.info('[SYNC] Texture file to src: ' + fileName)
-// })
-
-console.log(`${color.redBright(`[TMP_READY]`)} - Texture Folder Watched Ready: ${newTexturePath}`)
+console.log(`${color.redBright(`[TMP:READY]`)} - Texture Folder Watched Ready: ${color.yellow(newTexturePath)}`)
 syncDir.sync(newTexturePath, path.resolve(__dirname, '../tmp'), {
   watch: true, skipInitialSync: true,
-  // chokidarWatchOptions: {awaitWriteFinish: true},
-  afterEachSync: ({ eventType, srcPath }) => { console.log(`${color.redBright(`[TMP_${voca.upperCase(eventType)}]`)} ${path.basename(srcPath)}`) }
+  afterEachSync: ({ eventType, srcPath }) => { console.log(`${color.redBright(`[TMP:${voca.upperCase(eventType)}]`)} - ${color.yellow(path.basename(srcPath))}`) }
 })
