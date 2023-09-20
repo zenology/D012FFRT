@@ -1,8 +1,8 @@
 const getConfig = require("./helper");
-const chokidar = require('chokidar');
 const path = require('path')
-const fs = require('fs-extra')
-const timer = require('timers/promises')
+const syncDir = require('sync-directory')
+const voca = require('voca')
+const color = require('ansi-colors');
 
 const saveLocation = getConfig()?.save_location
 
@@ -13,45 +13,37 @@ if (!saveLocation) {
 const srcPath = path.resolve(__dirname, '../src')
 const newTexturePath = path.resolve(saveLocation, 'new')
 
-const srcWatcher = chokidar.watch(srcPath)
+console.log(`${color.blueBright(`[DEPLOY_READY]`)} - WIP Folder Watched Ready: ${srcPath}`)
+syncDir.sync(srcPath, saveLocation, {
+  watch: true,
+  skipInitialSync: true,
+  filter: (pathName) => {
+    const fileName = path.basename(pathName)
+    const rootFile = pathName.replace(srcPath + "\\", '')
 
-srcWatcher.on('ready', () => {
-  console.log('[READY] - Source Folder Watched Ready: ' + srcPath)
+    return !/X\d+ - /.test(rootFile) && !/\.(psd|ai|tmp)$/.test(fileName) && !/^[A-Fa-f0-9]+\..+/.test(fileName) && !/\.tmp/.test(rootFile)
+  },
+  afterEachSync: ({ eventType, srcPath }) => { console.log(`${color.blueBright(`[DEPLOY_${voca.upperCase(eventType)}]`)} ${path.basename(srcPath)}`) }
 })
 
-srcWatcher.on('change', (pathName) => {
-  const fileName = path.basename(pathName)
-  const rootFile = pathName.replace(srcPath + "\\", '')
-  const isSingleLevelDir = rootFile === fileName
+// const destWatcher = chokidar.watch(newTexturePath, { persistent, awaitWriteFinish: true })
 
-  if (!/X\d+ - /.test(rootFile) && !/\.(psd|ai|tmp)$/.test(fileName) && !/^[A-Fa-f0-9]+\..+/.test(fileName) && !/\.tmp/.test(rootFile)) {
+// destWatcher.on('ready', () => {
+//   fs.ensureDirSync(path.resolve(__dirname, '../tmp'))
 
-    // Wait 1 second for the file to finish created
-    timer.setTimeout(1000).then(() => {
-      if (!isSingleLevelDir) {
-        fs.ensureDirSync(path.resolve(saveLocation, rootFile.replace('\\' + fileName)))
-      }
+//   console.log('[READY] - Destination Folder Watched Ready: ' + newTexturePath)
+// })
 
-      fs.cpSync(pathName, path.resolve(saveLocation, rootFile))
+// destWatcher.on('change', (pathName) => {
+//   const fileName = path.basename(pathName)
 
-      const infoFileMsg = rootFile
-      console.info('[DEPLOY] Texture file to PPSSPP: ' + infoFileMsg)
-    })
-  }
-})
+//   fs.cpSync(pathName, path.resolve(__dirname, '../tmp', fileName), { recursive: true })
+//   console.info('[SYNC] Texture file to src: ' + fileName)
+// })
 
-const destWatcher = chokidar.watch(newTexturePath)
-
-destWatcher.on('ready', () => {
-  fs.ensureDirSync(path.resolve(__dirname, '../tmp'))
-
-  console.log('[READY] - Destination Folder Watched Ready: ' + newTexturePath)
-})
-
-destWatcher.on('change', (pathName) => {
-  const fileName = path.basename(pathName)
-
-  fs.cpSync(pathName, path.resolve(__dirname, '../tmp', fileName), { recursive: true })
-  console.info('[SYNC] Texture file to src: ' + fileName)
-
+console.log(`${color.redBright(`[TMP_READY]`)} - Texture Folder Watched Ready: ${newTexturePath}`)
+syncDir.sync(newTexturePath, path.resolve(__dirname, '../tmp'), {
+  watch: true, skipInitialSync: true,
+  // chokidarWatchOptions: {awaitWriteFinish: true},
+  afterEachSync: ({ eventType, srcPath }) => { console.log(`${color.redBright(`[TMP_${voca.upperCase(eventType)}]`)} ${path.basename(srcPath)}`) }
 })
