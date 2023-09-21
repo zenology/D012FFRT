@@ -17,7 +17,12 @@ console.log(`${color.blueBright(`[DEPLOY:READY]`)} - WIP Folder Watched Ready: $
 syncDir.sync(srcPath, saveLocation, {
   watch: true,
   skipInitialSync: true,
-
+  chokidarWatchOptions: {
+    awaitWriteFinish: {
+      stabilityThreshold: 2000,
+      pollInterval: 100
+    }
+  },
   exclude: (pathName) => {
     const fileName = path.basename(pathName)
     const rootFile = pathName.replace(srcPath + "\\", '')
@@ -30,5 +35,11 @@ syncDir.sync(srcPath, saveLocation, {
 console.log(`${color.redBright(`[TMP:READY]`)} - Texture Folder Watched Ready: ${color.yellow(newTexturePath)}`)
 syncDir.sync(newTexturePath, path.resolve(__dirname, '../tmp'), {
   watch: true, skipInitialSync: true,
+  chokidarWatchOptions: {
+    awaitWriteFinish: {
+      stabilityThreshold: 2000,
+      pollInterval: 100
+    }
+  },
   afterEachSync: ({ eventType, srcPath }) => { console.log(`${color.redBright(`[TMP:${voca.upperCase(eventType)}]`)} - ${color.yellow(path.basename(srcPath))}`) }
 })
